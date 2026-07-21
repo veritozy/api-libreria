@@ -35,3 +35,12 @@ jobs:
 
       - name: Subir imagen
         run: docker push veritoz/api-libreria:latest
+
+      - name: Probar conexión EC2
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: 54.174.237.197
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            echo "Conexión exitosa a EC2"
