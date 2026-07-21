@@ -43,4 +43,11 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            echo "Conexión exitosa a EC2"
+            sudo docker pull veritoz/api-libreria:latest
+            sudo docker stop api-spring || true
+            sudo docker rm api-spring || true
+            sudo docker run -d \
+              --name api-spring \
+              --network libreria-aws \
+              -p 8080:8080 \
+              veritoz/api-libreria:latest
