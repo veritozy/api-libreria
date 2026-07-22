@@ -36,18 +36,23 @@ jobs:
       - name: Subir imagen
         run: docker push veritoz/api-libreria:latest
 
-      - name: Probar conexión EC2
+      - name: Desplegar en EC2
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: 184.73.135.241
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
+
           script: |
             sudo docker pull veritoz/api-libreria:latest
+
             sudo docker stop api-spring || true
             sudo docker rm api-spring || true
+
             sudo docker run -d \
               --name api-spring \
               --network libreria-aws \
               -p 8080:8080 \
+              -e AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }} \
+              -e AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }} \
               veritoz/api-libreria:latest
